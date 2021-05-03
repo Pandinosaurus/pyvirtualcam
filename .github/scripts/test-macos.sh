@@ -14,7 +14,7 @@ set -x
 popd
 
 # Install pyvirtualcam
-pip install dist/*.whl
+pip install dist/pyvirtualcam*cp${PYVER}*macosx*.whl
 
 # Test installed pyvirtualcam
 retry pip install -r dev-requirements.txt
