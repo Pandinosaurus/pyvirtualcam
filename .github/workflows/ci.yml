@@ -8,7 +8,7 @@ jobs:
   build:
     strategy:
       fail-fast: false
-      matrix: &build-matrix
+      matrix:
         config:
         - os-image: ubuntu-latest
           os-name: linux
@@ -117,7 +117,76 @@ jobs:
   test:
     strategy:
       fail-fast: false
-      matrix: *build-matrix
+      matrix:
+        # GitHub Actions doesn't support YAML anchors,
+        # so this has to be duplicated here.
+        config:
+        - os-image: ubuntu-latest
+          os-name: linux
+          docker-image: quay.io/pypa/manylinux2014_x86_64
+          python-version: '3.6'
+          numpy-version: '1.11.*'
+        - os-image: ubuntu-latest
+          os-name: linux
+          docker-image: quay.io/pypa/manylinux2014_x86_64
+          python-version: '3.7'
+          numpy-version: '1.14.*'
+        - os-image: ubuntu-latest
+          os-name: linux
+          docker-image: quay.io/pypa/manylinux2014_x86_64
+          python-version: '3.8'
+          numpy-version: '1.17.*'
+        - os-image: ubuntu-latest
+          os-name: linux
+          docker-image: quay.io/pypa/manylinux2014_x86_64
+          python-version: '3.9'
+          numpy-version: '1.19.*'
+
+        # Ideally 10.6 (same as offical Python installer) but there
+        # are issues targeting that with newer XCode versions.
+        # As likely nobody is using 10.6 anymore, targeting 10.9 is acceptable.
+        # See https://github.com/pandas-dev/pandas/issues/23424#issuecomment-446393981.
+        - os-image: macos-latest
+          os-name: mac
+          macos-min-version: '10.9'
+          python-version: '3.6'
+          numpy-version: '1.11.*'
+        - os-image: macos-latest
+          os-name: mac
+          macos-min-version: '10.9'
+          python-version: '3.7'
+          numpy-version: '1.14.*'
+        - os-image: macos-latest
+          os-name: mac
+          macos-min-version: '10.9'
+          python-version: '3.8'
+          numpy-version: '1.17.*'
+        - os-image: macos-latest
+          os-name: mac
+          macos-min-version: '10.9'
+          python-version: '3.9'
+          numpy-version: '1.19.*'
+
+        - os-image: windows-latest
+          os-name: windows
+          python-version: '3.6'
+          python-arch: '64'
+          numpy-version: '1.11'
+        - os-image: windows-latest
+          os-name: windows
+          python-version: '3.7'
+          python-arch: '64'
+          numpy-version: '1.14'
+        - os-image: windows-latest
+          os-name: windows
+          python-version: '3.8'
+          python-arch: '64'
+          numpy-version: '1.17'
+        - os-image: windows-latest
+          os-name: windows
+          python-version: '3.9'
+          python-arch: '64'
+          numpy-version: '1.19'
 
     runs-on: ${{ matrix.config.os-image }}
 
@@ -139,7 +208,6 @@ jobs:
       run: docker run --rm -e PYTHON_VERSION -e NUMPY_VERSION -v `pwd`:/io ${{ matrix.config.docker-image }} /io/.github/scripts/test-linux.sh
       env:
         PYTHON_VERSION: ${{ matrix.config.python-version }}
-        NUMPY_VERSION: ${{ matrix.config.numpy-version }}
 
     - name: Test wheel (Windows)
       if: matrix.config.os-name == 'windows'
@@ -151,7 +219,6 @@ jobs:
       env:
         PYTHON_VERSION: ${{ matrix.config.python-version }}
         PYTHON_ARCH: ${{ matrix.config.python-arch }}
-        NUMPY_VERSION: ${{ matrix.config.numpy-version }}
 
     - name: Test wheel (macOS)
       if: matrix.config.os-name == 'mac'
@@ -159,9 +226,7 @@ jobs:
         .github/scripts/install-macos-obs-virtual-cam.sh
         .github/scripts/test-macos.sh
       env:
-        MACOS_MIN_VERSION: ${{ matrix.config.macos-min-version }}
         PYTHON_VERSION: ${{ matrix.config.python-version }}
-        NUMPY_VERSION: ${{ matrix.config.numpy-version }}
 
     - name: Store test captures as artifacts
       uses: actions/upload-artifact@v2
