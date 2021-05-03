@@ -3,8 +3,6 @@ set -e -x
 
 cd /io
 
-source .github/scripts/retry.sh
-
 # List python versions
 ls /opt/python
 
@@ -22,7 +20,7 @@ else
 fi
 
 # install compile-time dependencies
-retry ${PYBIN}/pip install numpy==${NUMPY_VERSION}
+${PYBIN}/pip install numpy==${NUMPY_VERSION}
 
 # List installed packages
 ${PYBIN}/pip freeze

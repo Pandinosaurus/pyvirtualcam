@@ -23,7 +23,7 @@ PYVER=${PYTHON_VERSION//.}
 # Install package and test
 ${PYBIN}/pip install ./dist/pyvirtualcam*cp${PYVER}*manylinux*.whl
 
-retry ${PYBIN}/pip install -r dev-requirements.txt
+${PYBIN}/pip install -r dev-requirements.txt
 
 mkdir tmp
 pushd tmp

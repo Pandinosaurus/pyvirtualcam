@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e -x
 
-source .github/scripts/retry.sh
-
 git clone https://github.com/matthew-brett/multibuild.git
 pushd multibuild
 set +x # reduce noise
@@ -19,7 +17,7 @@ PYVER=${PYTHON_VERSION//.}
 pip install dist/pyvirtualcam*cp${PYVER}*macosx*.whl
 
 # Test installed pyvirtualcam
-retry pip install -r dev-requirements.txt
+pip install -r dev-requirements.txt
 mkdir tmp
 pushd tmp
 python -u -m pytest -v -s ../test

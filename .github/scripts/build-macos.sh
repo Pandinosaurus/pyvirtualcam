@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e -x
 
-source .github/scripts/retry.sh
-
 # General note:
 # Apple guarantees forward, but not backward ABI compatibility unless
 # the deployment target is set for the oldest supported OS.
@@ -31,7 +29,7 @@ set -x
 popd
 
 # Install dependencies
-retry pip install numpy==$NUMPY_VERSION wheel delocate
+pip install numpy==$NUMPY_VERSION wheel delocate
 
 # List installed packages
 pip freeze
