@@ -13,6 +13,8 @@ source venv/bin/activate
 set -x
 popd
 
+PYVER=${PYTHON_VERSION//.}
+
 # Install pyvirtualcam
 pip install dist/pyvirtualcam*cp${PYVER}*macosx*.whl
 
